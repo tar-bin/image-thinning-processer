@@ -5,6 +5,7 @@ function setup() {
 
 function getFile(file) {
     if (file.type == "image") {
+        createImg(file.data);
         loadImage(file.data, (img) => {
             resizeCanvas(img.width, img.height);
             // グレースケール
