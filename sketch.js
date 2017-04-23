@@ -1,35 +1,34 @@
-var orgimg;
-
-function preload() {
-    orgimg = loadImage("test.png");
-}
-
 function setup() {
-    createCanvas(orgimg.width * 2, orgimg.height * 2);
-    image(orgimg, 0, 0);
-    // グレースケール
-    orgimg.filter(GRAY);
-    image(orgimg, orgimg.width, 0);
-    // 線画抽出
-    // http://www.mathgram.xyz/entry/cv/contour
-    // 白膨張 => 元と差を取る => 反転
-    let dilateimg = orgimg.get();
-    dilateimg.filter(DILATE);
-    dilateimg.filter(DILATE);
-    orgimg.blend(dilateimg,
-        0, 0, orgimg.width, orgimg.height,
-        0, 0, orgimg.width, orgimg.height,
-        DIFFERENCE);
-    // ２値化
-    orgimg.filter(THRESHOLD, 0.1);
-    image(orgimg, 0, orgimg.height);
-    // 細線化
-    NWG(orgimg);
-    orgimg.filter(INVERT);
-    image(orgimg, orgimg.width, orgimg.height);
+    createCanvas(100, 100);
+    createFileInput(getFile);
 }
 
-function draw() {
+function getFile(file) {
+    if (file.type == "image") {
+        loadImage(file.data, (img) => {
+            resizeCanvas(img.width, img.height);
+            // グレースケール
+            img.filter(GRAY);
+            // 線画抽出
+            // http://www.mathgram.xyz/entry/cv/contour
+            // 白膨張 => 允E��差を取めE=> 反転
+            let dilateimg = img.get();
+            dilateimg.filter(DILATE);
+            dilateimg.filter(DILATE);
+            img.blend(dilateimg,
+                0, 0, img.width, img.height,
+                0, 0, img.width, img.height,
+                DIFFERENCE);
+            // �E�値匁E
+            img.filter(THRESHOLD, 0.1);
+            // 細線化
+            NWG(img);
+            img.filter(INVERT);
+            image(img, 0, 0);
+        });
+    } else {
+        print("画像ファイルを選択してください");
+    }
 }
 
 // the Nagendraprasad-Wang-Gupta thinning algorithm
